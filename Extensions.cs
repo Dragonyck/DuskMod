@@ -33,12 +33,21 @@ namespace DuskMod
 {
     static internal class Extensions
     {
-        internal static OnKillTrigger NewKillTrigger(this OnKillTrigger trigger, int killsToTrigger, bool anyDamageType = true, DamageType damageType = DamageType.None)
+        public static bool IsEnemy(this GameObject obj)
         {
-            trigger.killsToTrigger = killsToTrigger;
-            trigger.anyDamageType = anyDamageType;
-            trigger.damageType = damageType;
-            return trigger;
+            return obj.tag == "Enemy";
+        }
+        public static bool IsBoss(this GameObject obj)
+        {
+            return obj.tag.Contains("Champion");
+        }
+        public static bool IsNullOrEmpty<T>(this List<T> list)
+        {
+            return (list == null || list.Count == 0);
+        }
+        public static bool IsNullOrEmpty(this Array array)
+        {
+            return (array == null || array.Length == 0);
         }
         internal static Vector2 AimDirection(this Gun gun)
         {

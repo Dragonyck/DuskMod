@@ -58,10 +58,24 @@ namespace DuskMod
         internal static void AddLanguage()
         {
             localizedEN.Add(reaperNameToken, "Reaper");
-            localizedEN.Add(reaperDescriptionToken, "Start with +3 Soul Hearts. Trigger on kill effects twice.");
+            localizedEN.Add(reaperDescriptionToken, "Start with " + ColorText("+3 Soul Hearts", "fd5161") + ". Trigger on kill effects " + ColorText("twice", "fd5161") + ".");
 
             localizedEN.Add(reaperPU1NameToken, "Soul Harvester");
-            localizedEN.Add(reaperPU1DescriptionToken, "Collect your enemies' souls. Every 13th kill, there's a small chance to gain +50% on a random stat for 1 second. The chance is influenced by souls.");
+            localizedEN.Add(reaperPU1DescriptionToken, "Collect your enemies' " + ColorText("souls") + ". Every " + ColorText("13th") + " kill, there's a small chance to gain " + ColorText("+50%") + " on a random stat for " + ColorText("1") + " second. The chance is influenced by " + ColorText("souls") + ".");
+
+            localizedEN.Add(reaperPU2NameToken, "Putrid Carcass");
+            localizedEN.Add(reaperPU2DescriptionToken, "Enemies drop a " + ColorText("carcass") + " on death if they were afflicted by a " + ColorText("debuff") + ". It " + ColorText("bursts") + " when stepped on, " + ColorText("inflicting") + " all nearby enemies with the same " + ColorText("debuffs") + ".");
+
+            localizedEN.Add(reaperPU3NameToken, "Dead Heart");
+            localizedEN.Add(reaperPU3DescriptionToken, "Kill " + ColorText("666") + " enemies to " + ColorText("activate") + ". When active, prevents death " + ColorText("once") + ", instantly " + ColorText("kills") + " nearby non-Boss enemies and gain " + ColorText("base") + " Soul Hearts. " + ColorText("Deactivates") + " when triggered.");
+
+
+
+        }
+        internal static string ColorText(string textToColor, string color = "f5d6c1")
+        {
+            string newString = "<color=#" + color + ">" + textToColor + "</color>";
+            return newString;
         }
     }
 }

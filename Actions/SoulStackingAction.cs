@@ -28,6 +28,7 @@ using flanne.UIExtensions;
 using System.IO;
 using UnityEngine.Events;
 using flanne.PerkSystem.Triggers;
+using flanne.Player.Buffs;
 
 namespace DuskMod
 {
@@ -37,10 +38,10 @@ namespace DuskMod
         private int soulStack = 0;
         private int min = 800;
         private float statMult = 0.5f;
+        private float buffDuration = 1;
         public override void Init()
         {
             base.Init();
-            Debug.LogWarning("SoulStackingAction Equipped");
         }
         public override void Activate(GameObject target)
         {
@@ -57,11 +58,31 @@ namespace DuskMod
         }
         void ModStat()
         {
-            StatsHolder componentInChildren = PlayerController.Instance.GetComponentInChildren<StatsHolder>();
-            if (componentInChildren)
+            if (!PlayerController.Instance)
+            {
+                return;
+            }
+            StatsHolder statsHolder = PlayerController.Instance.GetComponentInChildren<StatsHolder>();
+            if (statsHolder)
             {
                 Array stats = Enum.GetValues(typeof(StatType));
-                componentInChildren[(StatType)stats.GetValue(UnityEngine.Random.Range(0, stats.Length + 1))].AddMultiplierBonus(statMult);
+                StatType stat = (StatType)stats.GetValue(UnityEngine.Random.Range(0, stats.Length - 1));
+                PlayerBuffs playerBuffs = PlayerController.Instance.GetComponentInChildren<PlayerBuffs>();
+                if (playerBuffs)
+                {
+                    TemporaryStatBuff buff = new TemporaryStatBuff();
+                    buff.statChanges = new StatChange[]
+                    {
+                        new StatChange
+                        {
+                            type = stat,
+                            value = statMult,
+                            isFlatMod = false
+                        }
+                    };
+                    buff.duration = buffDuration;
+                    playerBuffs.Add(buff);
+                }
             }
         }
     }

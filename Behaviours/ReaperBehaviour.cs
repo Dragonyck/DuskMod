@@ -33,37 +33,74 @@ namespace DuskMod
     internal class ReaperBehaviour : MonoBehaviour
     {
         private int shpIncrease = 3;
-        private UnityEvent onLethalDeath;
+        private UnityEvent onLethalDeath = new UnityEvent();
+        internal UnityEvent onDeathPrevented = new UnityEvent();
         private bool deadDead = false;
+        private bool giveUp = false;
+        internal bool preventDeath = false;
         private GameController gameController;
+        private SoundEffectSO deathPreventSound = Prefabs.preventDeathSFX;
+
         private void Start()
         {
-            if (MainPlugin.debug)
-            {
-                PlayerController.Instance.playerPerks.Equip(Prefabs.reaperPU1);
-            }
+            onDeathPrevented.AddListener(new UnityAction(VeryveryDeathActualDeath));
+
             this.AddObserver(new Action<object, object>(this.OnKill), Health.DeathEvent);
 
             PlayerController.Instance.playerHealth.maxSHP += shpIncrease;
             PlayerController.Instance.playerHealth.shp += shpIncrease;
             PlayerController.Instance.playerHealth.onHurt.AddListener(new UnityAction(OnHurt));
 
-            Debug.LogWarning("1");
             PersistentCallGroup persistentCalls = PlayerController.Instance.playerHealth.onDeath.m_PersistentCalls;
-            Debug.LogWarning("2");
-            onLethalDeath.m_PersistentCalls = new PersistentCallGroup();
-            onLethalDeath.m_PersistentCalls.m_Calls = new List<PersistentCall>();
-            Debug.LogWarning("3");
             onLethalDeath.m_PersistentCalls.m_Calls.AddRange(persistentCalls.m_Calls);
-            Debug.LogWarning("4");
             onLethalDeath.AddListener(new UnityAction(VeryveryDeathActualDeath));
-            Debug.LogWarning("5");
+
             PlayerController.Instance.playerHealth.onDeath.m_PersistentCalls.Clear();
-            Debug.LogWarning("6");
 
             gameController = FindObjectOfType<GameController>();
-            Debug.LogWarning("7");
+            if (gameController)
+            {
+                gameController.giveupButton.onClick.AddListener(delegate () { giveUp = true; });
+            }
+            On.flanne.Core.PlayerDeadState.Enter += PlayerDeadState_Enter;
 
+            if (MainPlugin.debug)
+            {
+                PlayerController.Instance.playerPerks.Equip(Prefabs.reaperPU3);
+            }
+        }
+        void PreventDeath()
+        {
+            preventDeath = false;
+            deathPreventSound.Play();
+            PlayerController.Instance.playerHealth.shp += 3;
+            foreach (Collider2D c in Physics2D.OverlapCircleAll(base.transform.position, 8))
+            {
+                if (c.gameObject.IsEnemy() && !c.gameObject.IsBoss())
+                {
+                    var cursePrefab = CurseSystem.Instance.curseFXPrefab;
+                    if (cursePrefab)
+                    {
+                        SpawnPrefabFromObjectPool sp = cursePrefab.GetComponent<SpawnPrefabFromObjectPool>();
+                        if (sp)
+                        {
+                            Instantiate(sp.prefab, c.transform.position, Quaternion.identity, null);
+                        }
+                    }
+                    c.GetComponent<Health>().AutoKill();
+                }
+            }
+        }
+        private void PlayerDeadState_Enter(On.flanne.Core.PlayerDeadState.orig_Enter orig, PlayerDeadState self)
+        {
+            if (!deadDead && !giveUp)
+            {
+                self.owner.ChangeState<CombatState>();
+            }
+            else
+            {
+                orig(self);
+            }
         }
         private void Update()
         {
@@ -78,32 +115,34 @@ namespace DuskMod
             deadDead = true;
             if (gameController)
             {
-                CombatState state = gameController.CurrentState as CombatState;
-                if (state)
-                {
-                    state.OnDeath();
-                }
+                gameController.ChangeState<PlayerDeadState>();
             }
         }
         void OnHurt()
         {
             if (PlayerController.Instance.playerHealth.shp == 0)
             {
+                if (preventDeath)
+                {
+                    PreventDeath();
+                    return;
+                }
                 onLethalDeath.Invoke();
             }
-            if (gameController)
+            /*if (!deadDead && gameController)
             {
                 CombatState state = gameController.CurrentState as CombatState;
                 if (state)
                 {
                     PlayerController.Instance.playerHealth.onDeath.RemoveListener(state.OnDeath);
                 }
-            }
+            }*/
         }
         private void OnDestroy()
         {
             this.RemoveObserver(new Action<object, object>(this.OnKill), Health.DeathEvent);
-		}
+            On.flanne.Core.PlayerDeadState.Enter -= PlayerDeadState_Enter;
+        }
 		private void OnKill(object sender, object args)
         {
             if ((sender as Health).gameObject.tag == "Enemy" && args == null)

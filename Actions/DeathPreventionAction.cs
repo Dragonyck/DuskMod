@@ -31,30 +31,20 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-    class CarcassDropAction : flanne.PerkSystem.Action
+    class DeathPreventionAction : flanne.PerkSystem.Action
     {
+        private bool activated = false;
         public override void Init()
         {
             base.Init();
-            Debug.LogWarning("DED");
         }
         public override void Activate(GameObject target)
         {
-            Health health = target.GetComponent<Health>();
-            if (health)
+            if (!activated)
             {
-                foreach (BurnSystem.BurnTarget b in BurnSystem.SharedInstance._currentTargets)
-                {
-                    if (b.target == health.gameObject)
-                    {
-                        Debug.LogWarning("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
-                    }
-                }
+                activated = true;
+                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
             }
-        }
-        void SpawnCarcass()
-        {
-            
         }
     }
 }

@@ -33,7 +33,13 @@ namespace DuskMod
     {
         public static AssetBundle MainAssetBundle = null;
 
-        public static void PopulateAssets()
+        internal static T Load<T>(string name)
+        {
+            object o = MainAssetBundle.LoadAsset(name, typeof(T));
+            T e = (T)o;
+            return e;
+        }
+        internal static void PopulateAssets()
         {
             if (MainAssetBundle == null)
             {
