@@ -32,13 +32,13 @@ using flanne.Player.Buffs;
 
 namespace DuskMod
 {
-    internal class SoulStackingAction : flanne.PerkSystem.Action
+    public class SoulStackingAction : flanne.PerkSystem.Action
     {
-        private int souls = 0;
-        private int soulStack = 0;
-        private int min = 800;
-        private float statMult = 0.5f;
-        private float buffDuration = 1;
+        public int souls = 0;
+        public int soulStack = 0;
+        public int min = 800;
+        public float statMult = 0.5f;
+        public float buffDuration = 1;
         public override void Init()
         {
             base.Init();

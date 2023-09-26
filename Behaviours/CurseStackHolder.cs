@@ -26,25 +26,16 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
+using HarmonyLib;
+using UnityEngine.TextCore;
+using TMPro;
 using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using flanne.PerkSystem.Actions;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class CurseStackHolder : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
-        }
+        public int stacks = 1;
     }
 }

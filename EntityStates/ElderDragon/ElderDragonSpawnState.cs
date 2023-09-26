@@ -26,25 +26,29 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using System.Collections; 
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class ElderDragonSpawnState : BaseSpawnState
     {
-        public bool activated = false;
-        public override void Init()
+        public SoundEffectSO spawnSound = Prefabs.elderDragonSpawn;
+        public override void Enter()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            base.Enter();
+            if (spawnSound)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                spawnSound.Play();
             }
+        }
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+
+        }
+        public override void SetNextState()
+        {
+            components.machine.ChangeState<ElderDragonBaseState>();
         }
     }
 }

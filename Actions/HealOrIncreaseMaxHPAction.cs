@@ -31,20 +31,17 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
-    {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
-        }
-    }
+    class HealOrIncreaseMaxHPAction : flanne.PerkSystem.Action
+	{
+		public int healAmount = 1;
+		public override void Activate(GameObject target)
+		{
+			var health = PlayerController.Instance.playerHealth;
+			if (health.hp == health.maxHP)
+			{
+				PlayerController.Instance.stats[StatType.MaxHP].AddFlatBonus(healAmount);
+			}
+			health.Heal(healAmount);
+		}
+	}
 }

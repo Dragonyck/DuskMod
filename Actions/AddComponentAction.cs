@@ -31,20 +31,11 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class AddTargetComponentAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
         public override void Activate(GameObject target)
         {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
+            target.AddComponent<TargetEnemyBehaviour>();
         }
     }
 }

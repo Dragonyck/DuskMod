@@ -26,25 +26,25 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class AnimEventReload : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public SoundEffectSO clipout = Prefabs.fmg9clipout;
+        public SoundEffectSO clipin = Prefabs.fmg9clipin;
+        public SoundEffectSO chamba = Prefabs.fmg9chamba;
+        public void ClipOut()
         {
-            base.Init();
+            clipout.Play();
         }
-        public override void Activate(GameObject target)
+        public void ClipIn()
         {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
+            clipin.Play();
+        }
+        public void Chamba()
+        {
+            chamba.Play();
         }
     }
 }

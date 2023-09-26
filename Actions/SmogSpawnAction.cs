@@ -31,19 +31,21 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+   public class SmogSpawnAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
+        public int chance = 60;
         public override void Init()
         {
             base.Init();
         }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            if (UnityEngine.Random.Range(0, 100) <= chance)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                if (MainPlugin.debug)
+                {
+                    Debug.LogWarning("Smog Spawned");
+                }
             }
         }
     }

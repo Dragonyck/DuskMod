@@ -26,25 +26,24 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class NotificationTrigger : Trigger
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
-        }
-    }
+		public string notification;
+		public override void OnEquip(PlayerController player)
+		{
+			this.AddObserver(new Action<object, object>(Trigger), notification, PlayerController.Instance.gameObject);
+		}
+		public override void OnUnEquip(PlayerController player)
+		{
+			this.RemoveObserver(new Action<object, object>(Trigger), notification, PlayerController.Instance.gameObject);
+		}
+		private void Trigger(object sender, object args)
+		{
+			Debug.LogError("NOTIFICATION TRIGGERED");
+			base.RaiseTrigger(args as GameObject);
+		}
+	}
 }

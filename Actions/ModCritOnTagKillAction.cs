@@ -31,19 +31,14 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class ModCritOnTagKillAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
+        public float critDmgBonus = 0.01f;
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            if (target.GetComponentInChildren<Target>())
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                PlayerController.Instance.stats[Prefabs.criticalDamage].AddMultiplierBonus(critDmgBonus);
             }
         }
     }

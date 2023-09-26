@@ -29,17 +29,17 @@ using System.IO;
 
 namespace DuskMod
 {
-    internal class Assets
+    public class Assets
     {
         public static AssetBundle MainAssetBundle = null;
 
-        internal static T Load<T>(string name)
+        public static T Load<T>(string name)
         {
             object o = MainAssetBundle.LoadAsset(name, typeof(T));
             T e = (T)o;
             return e;
         }
-        internal static void PopulateAssets()
+        public static void PopulateAssets()
         {
             if (MainAssetBundle == null)
             {

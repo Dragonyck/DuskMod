@@ -28,22 +28,20 @@ using flanne.UIExtensions;
 using System.IO;
 using UnityEngine.Events;
 using flanne.PerkSystem.Triggers;
+using static UnityEngine.Object;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class ExplosionOnHitAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
+        public float radius = 2;
+        public float dmgMult = 0.35f;
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            Destroy(Instantiate(Prefabs.redExplosionEffect, target.transform.position, Quaternion.identity, ObjectPooler.SharedInstance.transform), 0.3f);
+            foreach (Collider2D c in Physics2D.OverlapCircleAll(target.transform.position, radius, 1 << TagLayerUtil.Enemy))
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                c.gameObject.GetComponent<Health>().TakeDamage(DamageType.Burn, Mathf.FloorToInt(PlayerController.Instance.gun.damage * dmgMult));
             }
         }
     }

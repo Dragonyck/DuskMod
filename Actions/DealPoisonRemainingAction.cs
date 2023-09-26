@@ -31,19 +31,19 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+   public class DealPoisonRemainingAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
         public override void Init()
         {
             base.Init();
         }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            var health = target.GetComponent<Health>();
+            PoisonBehaviour poison = null;
+            if (health && PoisonManager.instance.IsPoisoned(health, out poison))
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                poison.DealRemainingDamage();
             }
         }
     }

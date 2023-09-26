@@ -31,30 +31,37 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-    class CarcassDropAction : flanne.PerkSystem.Action
+   public class CarcassDropAction : flanne.PerkSystem.Action
     {
+        public int chance = 13;
         public override void Init()
         {
             base.Init();
-            Debug.LogWarning("DED");
         }
         public override void Activate(GameObject target)
         {
-            Health health = target.GetComponent<Health>();
-            if (health)
+            if (UnityEngine.Random.Range(0, 100) <= chance)
             {
-                foreach (BurnSystem.BurnTarget b in BurnSystem.SharedInstance._currentTargets)
+                bool isBurning = BurnSystem.SharedInstance.IsBurning(target);
+                bool isCursed = CurseSystem.Instance.IsCursed(target);
+                bool isFrozen = FreezeSystem.SharedInstance.IsFrozen(target);
+                if (isBurning || isCursed || isFrozen)
                 {
-                    if (b.target == health.gameObject)
-                    {
-                        Debug.LogWarning("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
-                    }
+                    CarcassBehaviour c = UnityEngine.Object.Instantiate(Prefabs.carcass, target.transform.position, Quaternion.identity).GetComponent<CarcassBehaviour>();
+                    c.isBurn = isBurning;
+                    c.isCurse = isCursed;
+                    c.isFreeze = isFrozen;
+
+                    BoxCollider2D box = target.GetComponent<BoxCollider2D>();
+                    CircleCollider2D circle = target.GetComponent<CircleCollider2D>();
+                    float size = box ? Math.Max(box.size.x, box.size.y) / 2 : circle ? circle.radius : 1;
+                    c.transform.localScale = Vector2.one * size / 0.16f;
+
+                    UnityEngine.Object.Destroy(c.gameObject, 15);
+
+                    c.transform.SetParent(ObjectPooler.SharedInstance.transform);
                 }
             }
-        }
-        void SpawnCarcass()
-        {
-            
         }
     }
 }

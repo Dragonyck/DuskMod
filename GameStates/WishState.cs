@@ -27,24 +27,21 @@ using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
 using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
-    {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
-        }
-    }
+    class WishState : GameState
+	{
+		public override void Enter()
+		{
+			
+			base.pauseController.Pause();
+			AudioManager.Instance.SetLowPassFilter(true);
+		}
+		public override void Exit()
+		{
+			base.pauseController.UnPause();
+			AudioManager.Instance.SetLowPassFilter(false);
+		}
+	}
 }

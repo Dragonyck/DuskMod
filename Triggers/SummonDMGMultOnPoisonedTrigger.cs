@@ -26,25 +26,29 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
+using System.Collections;
 using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class SummonDMGMultOnPoisonedTrigger : Trigger
     {
-        public bool activated = false;
-        public override void Init()
+        public float damageMultiplier = 0.25f;
+        public override void OnEquip(PlayerController player)
         {
-            base.Init();
+            On.flanne.Health.TakeDamage += Health_TakeDamage;
         }
-        public override void Activate(GameObject target)
+        private void Health_TakeDamage(On.flanne.Health.orig_TakeDamage orig, Health self, DamageType damageType, int damage, float finalMultiplier)
         {
-            if (!activated)
+            if (damageType == DamageType.Summon && PoisonManager.instance && PoisonManager.instance.IsPoisoned(self))
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                finalMultiplier += damageMultiplier;
             }
+            orig(self, damageType, damage, finalMultiplier);
+        }
+        public override void OnUnEquip(PlayerController player)
+        {
+            On.flanne.Health.TakeDamage -= Health_TakeDamage;
         }
     }
 }

@@ -31,19 +31,18 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class DragonBallPickupBehaviour : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public SoundEffectSO pickupSFX = Prefabs.dragonballPickupSFX;
+        public void OnCollisionEnter2D(Collision2D collider)
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            if (collider.gameObject.GetComponent<PlayerHealth>())
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                pickupSFX.Play();
+                MinimapBehaviour.instance.minimapDragonballs[DragonBallBehaviour.instance.collectedDragonballs].gameObject.SetActive(true);
+                DragonBallBehaviour.instance.collectedDragonballs++;
+                Destroy(Instantiate(Prefabs.dragonballPickupFX, base.transform.position, Quaternion.identity, ObjectPooler.SharedInstance.transform), 0.3f);
+                Destroy(base.gameObject);
             }
         }
     }

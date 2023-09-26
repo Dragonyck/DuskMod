@@ -26,25 +26,29 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using System.Collections;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class BaseSpawnState : EntityState
     {
-        public bool activated = false;
-        public override void Init()
+        public bool startupFinished;
+        public override void FixedUpdate()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            base.FixedUpdate();
+            if (!startupFinished)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                startupFinished = !components.animator.GetCurrentAnimatorStateInfo(0).IsName("Spawn");
             }
+            else
+            {
+                SetNextState();
+                Destroy(this);
+            }
+        }
+        public virtual void SetNextState()
+        {
+            components.machine.ChangeState<AIWalkState>();
         }
     }
 }

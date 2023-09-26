@@ -31,20 +31,32 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class BleedExplosionAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
+        public float damage
         {
-            base.Init();
+            get
+            {
+                return PlayerController.Instance.gun.damage;
+            }
         }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            var h = target.GetComponent<Health>();
+            if (!h || h && BleedManager.instance && !BleedManager.instance.IsOnPeriod(h))
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                return;
             }
+
+            foreach (Collider2D c in Physics2D.OverlapCircleAll(target.transform.position, 2, 1 << TagLayerUtil.Enemy))
+            {
+                var health = c.GetComponent<Health>();
+                if (health)
+                {
+                    health.TakeDamage(Prefabs.bleed, Mathf.FloorToInt(damage));
+                }
+            }
+            UnityEngine.Object.Destroy(UnityEngine.Object.Instantiate(Prefabs.bleedExplosionFX, target.transform.position, Quaternion.identity, ObjectPooler.SharedInstance.transform), 0.2f);
         }
     }
 }

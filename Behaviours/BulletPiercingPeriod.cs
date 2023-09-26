@@ -26,25 +26,29 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class BulletPiercingPeriod : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public TrailRenderer trail;
+        public Color endColor;
+        public void Start()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            trail = base.GetComponent<TrailRenderer>();
+            if (trail)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                endColor = trail.endColor;
+                trail.endColor = Prefabs.colorDict["red"].Item1;
             }
+        }
+        public void OnDisable()
+        {
+            if (trail)
+            {
+                trail.endColor = endColor;
+            }
+            Destroy(this);
         }
     }
 }

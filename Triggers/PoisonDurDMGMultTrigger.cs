@@ -26,24 +26,27 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
+using System.Collections;
 using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class PoisonDurDMGMultTrigger : Trigger
     {
-        public bool activated = false;
-        public override void Init()
+        public override void OnEquip(PlayerController player)
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            if (PoisonManager.instance)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                PoisonManager.instance.baseDamageMult = 2;
+                PoisonManager.instance.baseDuration = 12;
+            }
+        }
+        public override void OnUnEquip(PlayerController player)
+        {
+            if (PoisonManager.instance)
+            {
+                PoisonManager.instance.baseDamageMult = 1;
+                PoisonManager.instance.baseDuration = 6;
             }
         }
     }

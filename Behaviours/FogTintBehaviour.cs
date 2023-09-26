@@ -26,24 +26,20 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class FogTintBehaviour : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public void Start()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
+            if (PlayerController.Instance)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                var image = PlayerController.Instance.GetComponentInChildren<RawImage>();
+                if (image)
+                {
+                    image.material.color = Color.clear;
+                }
             }
         }
     }

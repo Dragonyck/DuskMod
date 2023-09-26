@@ -26,25 +26,19 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using System.Collections;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class MinimapBehaviour : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public static MinimapBehaviour instance;
+        public Dictionary<GameObject, GameObject> minimapIcons = new Dictionary<GameObject, GameObject>();
+        public GameObject minimap;
+        public SpriteRenderer[] minimapDragonballs;
+        public void Awake()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
+            instance = this;
         }
     }
 }

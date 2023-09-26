@@ -26,25 +26,20 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using System.Collections;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class ExplosionEffectOnDisable : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public float effectDuration = 0.3f;
+        public float effectScale = 1;
+
+        public void OnDisable()
         {
-            base.Init();
-        }
-        public override void Activate(GameObject target)
-        {
-            if (!activated)
-            {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
-            }
+            var effect = Instantiate(Prefabs.redExplosionEffect, base.transform.position, Quaternion.identity, ObjectPooler.SharedInstance.transform);
+            effect.transform.localScale = Vector2.one * effectScale;
+            Destroy(effect, effectDuration);
         }
     }
 }

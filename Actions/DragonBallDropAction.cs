@@ -31,20 +31,28 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class DragonBallDropAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
+        public int chance = 7;
         public override void Init()
         {
             base.Init();
+            if (!DragonBallBehaviour.instance)
+            {
+                PlayerController.Instance.gameObject.AddComponent<DragonBallBehaviour>();
+            }
         }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            if (DragonBallBehaviour.instance.collectedDragonballs >= 7)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                return;
             }
+            if (UnityEngine.Random.Range(0, 100) <= chance)
+            {
+            }
+            var dragonball = UnityEngine.Object.Instantiate(Prefabs.dragonball, target.transform.position, Quaternion.identity, ObjectPooler.SharedInstance.transform);
+            dragonball.transform.GetChild(DragonBallBehaviour.instance.collectedDragonballs).gameObject.SetActive(true);
         }
     }
 }

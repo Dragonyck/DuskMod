@@ -31,19 +31,19 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    public class ReloadOverTimeAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
+        public bool reload;
+        public ReloadOverTimeAction(bool r)
         {
-            base.Init();
+            reload = r;
         }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            var r = target.GetComponent<ReloadOverTimeBehaviour>();
+            if (r)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                r.reload = reload;
             }
         }
     }

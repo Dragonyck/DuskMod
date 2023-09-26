@@ -31,20 +31,16 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class BleedAction : flanne.PerkSystem.Action
     {
-        public bool activated = false;
-        public override void Init()
-        {
-            base.Init();
-        }
         public override void Activate(GameObject target)
         {
-            if (!activated)
+            var health = target.GetComponent<Health>();
+            if (!health || health && health.isDead)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                return;
             }
+            BleedManager.instance.PeriodizeTarget(health);
         }
     }
 }

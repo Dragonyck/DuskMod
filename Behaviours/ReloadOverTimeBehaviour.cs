@@ -31,19 +31,28 @@ using flanne.PerkSystem.Triggers;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class ReloadOverTimeBehaviour : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public PlayerController player;
+        public Ammo ammo;
+        public bool reload = false;
+        public float stopwatch;
+        public void Awake()
         {
-            base.Init();
+            player = PlayerController.Instance;
+            ammo = player.ammo;
         }
-        public override void Activate(GameObject target)
+        public void FixedUpdate()
         {
-            if (!activated)
+            if (!reload || !player || !ammo)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                return;
+            }
+            stopwatch += Time.fixedDeltaTime;
+            if (ammo && stopwatch >= 0.1f / (1 + player.stats[StatType.ReloadRate]._multiplierBonus))
+            {
+                stopwatch = 0;
+                ammo.GainAmmo(1);
             }
         }
     }

@@ -26,24 +26,26 @@ using flanne.TitleScreen;
 using flanne.UI;
 using flanne.UIExtensions;
 using System.IO;
-using UnityEngine.Events;
-using flanne.PerkSystem.Triggers;
+using System.Collections;
 
 namespace DuskMod
 {
-   public class DeathPreventionAction : flanne.PerkSystem.Action
+    class PointAtCursor : MonoBehaviour
     {
-        public bool activated = false;
-        public override void Init()
+        public ShootingCursor cursor;
+        public void Start()
         {
-            base.Init();
+            cursor = ShootingCursor.Instance;
         }
-        public override void Activate(GameObject target)
+        public void Update()
         {
-            if (!activated)
+            if (cursor && !PauseController.isPaused)
             {
-                activated = true;
-                PlayerController.Instance.GetComponentInChildren<ReaperBehaviour>().preventDeath = true;
+                Vector2 a = Camera.main.ScreenToWorldPoint(cursor.cursorPosition);
+                Vector2 b = base.transform.position;
+                Vector2 vector = a - b;
+                float num = Mathf.Atan2(vector.y, vector.x) * 57.29578f;
+                base.transform.rotation = Quaternion.AngleAxis(num, Vector3.forward);
             }
         }
     }
