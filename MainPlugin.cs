@@ -43,7 +43,7 @@ namespace DuskMod
     {
         public const string MODUID = "com.Dragonyck.DuskMod";
         public const string MODNAME = "DuskMod";
-        public const string VERSION = "1.0.0";
+        public const string VERSION = "0.1.0";
 
         public bool akimboShot = false;
         public static GameController gameController;
@@ -218,7 +218,7 @@ namespace DuskMod
         private void GameController_Start(On.flanne.Core.GameController.orig_Start orig, GameController self)
         {
             orig(self);
-            self.gameObject.AddComponent<EscToQuitPauseState>().controller = self;
+            //self.gameObject.AddComponent<EscToQuitPauseState>().controller = self;
             if (PlayerController.Instance)
             {
                 PlayerController.Instance.gameObject.AddComponent<BleedManager>();

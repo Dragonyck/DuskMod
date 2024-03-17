@@ -51,12 +51,12 @@ namespace DuskMod
         }
         private void EscToQuitPauseState_started(InputAction.CallbackContext obj)
         {
-            Debug.LogError("Key");
+            //Debug.LogError("Key");
             KeyControl key = (KeyControl)obj.action.activeControl;
             if (key != null && key.keyCode == Key.S)
             {
-                Debug.LogError("SSSSSSSSSSSSSSSUSSSSSSSSSSSSSSSSSSSSS");
-                Debug.LogError("SUSSY"); 
+                //Debug.LogError("SSSSSSSSSSSSSSSUSSSSSSSSSSSSSSSSSSSSS");
+                //Debug.LogError("SUSSY"); 
             }
         }
         public void Unpause(InputAction.CallbackContext obj)

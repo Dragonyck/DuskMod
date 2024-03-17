@@ -72,8 +72,8 @@ namespace DuskMod
         }
         public override void Exit()
         {
-            base.Exit();
             projectileCount = 0;
+            base.Exit();
         }
         public void FireFireFireball()
         {

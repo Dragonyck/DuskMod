@@ -32,8 +32,8 @@ namespace DuskMod
 {
     class AIWalkState : AITargetState
     {
-        public virtual float speed() { return 3.5f; }
-        public virtual float pushForce() { return 3; }
+        public virtual float speed => 3.5f; 
+        public virtual float pushForce => 3;
         public bool walk = false;
         public override void FixedUpdate()
         {
@@ -50,9 +50,9 @@ namespace DuskMod
             {
                 Vector2 direction = target.transform.position - base.transform.position;
                 FlipDirection(direction);
-                if (Vector3.Dot(components.move.vector, direction.normalized) < speed())
+                if (Vector3.Dot(components.move.vector, direction.normalized) < speed)
                 {
-                    components.move.vector += direction.normalized * speed() * Time.fixedDeltaTime;
+                    components.move.vector += direction.normalized * speed * Time.fixedDeltaTime;
                 }
             }
             var magnitude = components.move.vector.magnitude;

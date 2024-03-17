@@ -35,7 +35,7 @@ namespace DuskMod
         public float deltaTime = 0;
         public float fixedDeltaTime = 0;
         public EntityStateMachine.Components components;
-        public virtual float duration() { return 0; }
+        public virtual float duration => 0;
         public override void Enter()
         {
             base.Enter();
@@ -46,10 +46,10 @@ namespace DuskMod
         }
         public override void Exit()
         {
-            base.Exit();
             deltaTime = 0;
             fixedDeltaTime = 0;
             this.enabled = false;
+            base.Exit();
         }
         public virtual void FixedUpdate()
         {
